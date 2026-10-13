@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Egg Catcher 🐣</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #ffe3f0 0%, #ffd0e6 50%, #ffc2dd 100%);
+      font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+      color: #8a4b6b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    h1 {
+      color: #ff6fa5;
+      font-size: 2.3rem;
+      margin: 0;
+      text-shadow: 2px 3px 0 #fff, 4px 6px 0 #ffb3d1;
+      letter-spacing: 1px;
+    }
+
+    h2 {
+      margin: 0;
+      color: #ff6fa5;
+      text-shadow: 1px 2px 0 #fff;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #b0628a;
+      font-weight: bold;
+    }
+
+    /* ---------- Baby chick mascot (pure CSS) ---------- */
+    .baby-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .baby {
+      position: relative;
+      width: 76px;
+      height: 70px;
+      animation: bob 2.2s ease-in-out infinite;
+    }
+
+    .baby.small {
+      width: 40px;
+      height: 38px;
+      animation: none;
+    }
+
+    .baby.delay {
+      animation-delay: 0.6s;
+    }
+
+    .baby .tuft {
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 14px;
+      background: #ffe97a;
+      border-radius: 50% 50% 0 0;
+      border: 2px solid #ffd54a;
+      border-bottom: none;
+    }
+
+    .baby .head {
+      position: absolute;
+      top: 8px;
+      left: 14px;
+      width: 48px;
+      height: 44px;
+      background: #fff6b8;
+      border: 3px solid #ffd54a;
+      border-radius: 50%;
+      box-shadow: inset -4px -4px 0 #ffeb85;
+    }
+
+    .baby .body {
+      position: absolute;
+      top: 36px;
+      left: 6px;
+      width: 64px;
+      height: 32px;
+      background: #fff1a1;
+      border: 3px solid #ffd54a;
+      border-radius: 50%;
+    }
+
+    .baby .wing {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      width: 14px;
+      height: 18px;
+      background: #ffe27a;
+      border: 2px solid #ffd54a;
+      border-radius: 50%;
+      transform: rotate(20deg);
+    }
+
+    .baby .wing.right {
+      left: auto;
+      right: 0;
+      transform: rotate(-20deg);
+    }
+
+    .baby .eye {
+      position: absolute;
+      top: 26px;
+      width: 7px;
+      height: 9px;
+      background: #5c3b57;
+      border-radius: 50%;
+    }
+
+    .baby .eye.left { left: 22px; }
+    .baby .eye.right { right: 22px; }
+
+    .baby .eye::after {
+      content: "";
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 3px;
+      height: 3px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    .baby .cheek {
+      position: absolute;
+      top: 38px;
+      width: 9px;
+      height: 6px;
+      background: #ffa3c7;
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    .baby .cheek.left { left: 10px; }
+    .baby .cheek.right { right: 10px; }
+
+    .baby .beak {
+      position: absolute;
+      top: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #ff9f5a;
+    }
+
+    .baby .feet {
+      position: absolute;
+      bottom: -6px;
+      width: 9px;
+      height: 5px;
+      background: #ff9f5a;
+      border-radius: 4px;
+    }
+
+    .baby .feet.left { left: 24px; }
+    .baby .feet.right { right: 24px; }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* ---------- Buttons ---------- */
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: min(280px, 80%);
+    }
+
+    .btn {
+      font: inherit;
+      font-weight: bold;
+      padding: 11px 16px;
+      border: 3px solid #ff8fbd;
+      border-radius: 999px;
+      background: #fff;
+      color: #c2528a;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #ffb3d1;
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+
+    .btn:hover {
+      background: #fff0f7;
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #ffb3d1;
+    }
+
+    .btn.primary {
+      background: #ff9cc6;
+      color: #fff;
+      border-color: #ff7fb3;
+      box-shadow: 0 4px 0 #e0649a;
+    }
+
+    .btn.primary:active {
+      box-shadow: 0 1px 0 #e0649a;
+    }
+
+    .btn.small {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      box-shadow: 0 2px 0 #ffb3d1;
+    }
+
+    .btn.touch {
+      width: 92px;
+      height: 66px;
+      font-size: 1.5rem;
+      border-radius: 24px;
+      touch-action: none;
+      user-select: none;
+    }
+
+    /* ---------- Game screen ---------- */
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      background: #fff0f7;
+      border: 3px solid #ffb3d1;
+      padding: 8px 12px;
+      border-radius: 20px;
+    }
+
+    .hud b {
+      color: #ff6fa5;
+    }
+
+    .game-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 5;
+      border: 5px solid #ffb3d1;
+      border-radius: 24px;
+      image-rendering: pixelated;
+      background: #ffe3f0;
+      box-shadow: 0 6px 0 #ffb3d1;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 220, 238, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+    }
+
+    .panel {
+      background: #fff;
+      border: 4px solid #ffb3d1;
+      border-radius: 24px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+      width: min(300px, 85%);
+      box-shadow: 0 6px 0 #ffb3d1;
+    }
+
+    .panel h2 {
+      text-shadow: none;
+    }
+
+    .panel p {
+      margin: 0;
+      font-weight: bold;
+      color: #b0628a;
+    }
+
+    .touch-controls {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+    }
+
+    /* ---------- Settings / info cards ---------- */
+    .card {
+      background: #fff;
+      border: 3px solid #ffb3d1;
+      padding: 16px;
+      border-radius: 20px;
+      width: min(360px, 100%);
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 0 #ffb3d1;
+    }
+
+    .card p {
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .card label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+    }
+
+    .card select {
+      font: inherit;
+      padding: 4px 8px;
+      border: 2px solid #ffb3d1;
+      border-radius: 10px;
+      background: #fff0f7;
+      color: #8a4b6b;
+    }
+
+    .card input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: #ff6fa5;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+
+    <!-- MAIN MENU -->
+    <section id="menu" class="screen">
+      <div class="baby-row">
+  <div class="baby"><div class="tuft"></div><div class="head"></div><div class="body"></div><div class="wing"></div><div class="wing right"></div><div class="eye left"></div><div class="eye right"></div><div class="cheek left"></div><div class="cheek right"></div><div class="beak"></div><div class="feet left"></div><div class="feet right"></div></div>
+</div>
+      <h1>Egg Catcher</h1>
+      <p class="subtitle">Help the little chick catch the falling eggs! 🥚💕</p>
+      <div class="menu-buttons">
+        <button id="startBtn" class="btn primary">Start 🐣</button>
+        <button id="howBtn" class="btn">How to Play</button>
+        <button id="settingsBtn" class="btn">Settings</button>
+        <button id="developerBtn" class="btn">Developer</button>
+      </div>
+    </section>
+
+    <!-- GAME -->
+    <section id="gameScreen" class="screen hidden">
+      <div class="hud">
+        <span>🥚 Score: <b id="score">0</b></span>
+        <span>💗 Lives: <b id="lives">3</b></span>
+        <span>🧺 Caught: <b id="caught">0</b></span>
+        <button id="pauseBtn" class="btn small">Pause</button>
+      </div>
+
+      <div class="game-wrap">
+        <canvas id="gameCanvas" width="480" height="600"></canvas>
+
+        <div id="pauseOverlay" class="overlay hidden">
+          <div class="panel">
+            <h2>Paused 🌸</h2>
+            <button id="resumeBtn" class="btn primary">Resume</button>
+            <button id="pauseSettingsBtn" class="btn">Settings</button>
+            <button id="pauseMenuBtn" class="btn">Main Menu</button>
+          </div>
+        </div>
+
+        <div id="endOverlay" class="overlay hidden">
+          <div class="panel">
+            <h2 id="endTitle">Game Over</h2>
+            <p id="endText"></p>
+            <button id="restartBtn" class="btn primary">Play Again</button>
+            <button id="endMenuBtn" class="btn">Main Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="touch-controls">
+        <button id="leftBtn" class="btn touch">◀</button>
+        <button id="touchPauseBtn" class="btn touch">II</button>
+        <button id="rightBtn" class="btn touch">▶</button>
+      </div>
+
+      <button id="gameMenuBtn" class="btn small">Main Menu</button>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settingsScreen" class="screen hidden">
+      <h2>Settings 🎀</h2>
+      <div class="card">
+        <label>Music <input type="checkbox" id="musicToggle" checked></label>
+        <label>Sound effects <input type="checkbox" id="soundToggle" checked></label>
+        <label>Sparkles <input type="checkbox" id="pixelToggle" checked></label>
+        <label>Difficulty
+          <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+          </select>
+        </label>
+      </div>
+      <button class="btn back-btn">Back</button>
+    </section>
+
+    <!-- HOW TO PLAY -->
+    <section id="howScreen" class="screen hidden">
+      <h2>How to Play 🐥</h2>
+      <div class="card">
+        <p>Move the baby chick left and right to catch the falling eggs.</p>
+        <p>Each caught egg earns 10 points. Every egg you miss costs one life.</p>
+        <p><b>Keyboard:</b> Arrow keys or A / D. Press P or Esc to pause.</p>
+        <p><b>Mobile:</b> Hold the left and right buttons.</p>
+      </div>
+      <button class="btn back-btn">Back</button>
+    </section>
+
+    <!-- DEVELOPER -->
+    <section id="developerScreen" class="screen hidden">
+      <h2>Developer 💖</h2>
+      <div class="card">
+        <p>Egg Catcher, built with HTML, CSS, and JavaScript on a canvas by RAITA.</p>
+      </div>
+      <button class="btn back-btn">Back</button>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
